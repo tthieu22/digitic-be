@@ -1,0 +1,58 @@
+***Backend
+
+npm init 
+npm i express mongoose bcrypt body-parser dotenv
+
+** Run
+npm start server
+ (package.json) add {
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js",
+        "server": "nodemon index.js"
+    },
+}
+
+** Create User
+index ==> Models-> userModel (!mdbgum) ==> Ctroller -> userCtrol ==> routes -> authRoute ==> middlewares -> errorHandler
+npm i nodemon --save-dev
+** Mã hóa Password
+npm i express-async-handler
+
+**Token thoong bao cho nguoi dung -> xac minh nguoi dung 
+npm i jsonwebtoken
+*get a User
+config ==> jwtToken ==> middlewares -> authmiddleware -> athRoute(      U : router.get("/:id", authmiddleware, getaUser)     )
+* update user uses Api dung token xac minh token
+* block a user when you are admin and you need an id user of the account you want block 
+router.put("/block-user/:id", authmiddleware, isAdmin, blockUser);
+** verified user id 
+Create folder Utils -> validateMonfgodbID 
+** Phan tich cookie --> refreshToken 3day 72*60*60*1000
+npm i cookie-parser
+-> handlerRefreshToken 
+** Log out  
+
+** Product : Model-> control -> router
+morgan - > npm i morgan
+** slugify -> auto create slug follow title
+slugify-> npm i slugify
+** search with filter 
+gte : min
+lte : max
+localhost:5000/api/product?price[gte]=22000&price[lte]=40000 || postman
+** search sort 
+localhost:5000/api/product?sort=-category,-brand
+** limiting the fields
+localhost:5000/api/product?fields=title,price,category
+**pagination
+localhost:5000/api/product?page=7&limit=3
+**Hide Password || resetTokenPassword || changed Password
+login -> get token 
+localhost:5000/api/user/password
+
+npm i nodemailer
+->search nodemailer {}
+**forgot password with email
+-create app password (my account :security -> 2 steps verification ->app password )
+localhost:5000/api/user/forgot-password-token

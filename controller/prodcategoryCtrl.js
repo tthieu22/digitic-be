@@ -1,15 +1,48 @@
-const Category = require("../models/prodcategoryModel")
+const ProdCategory = require("../models/prodcategoryModel")
 const asyncHandler = require("express-async-handler")
-const validateMongoDbId = require("../utils/validateMongodbId")
+const {validateMongodbId} = require("../utils/validateMongodbId")
 
 const createProdCategory = asyncHandler(async (req, res) => {
     try {
-        const newProdCategory = await Category.create(req.body);
+        const newProdCategory = await ProdCategory.create(req.body);
         res.json(newProdCategory)
 
     } catch (error) {
         throw new Error(error)
     }
 })
+const updateProdCategory = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    validateMongodbId(id)
+    try {
+        const updateProdCategory = await ProdCategory.findByIdAndUpdate(id, req.body,{new :true});
+        res.json(updateProdCategory)
 
-module.exports = { createProdCategory }
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+const deleteProdCategory = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    validateMongodbId(id);
+    try {
+        const deleteProdCategory = await ProdCategory.findByIdAndDelete(id);
+        res.json(deleteProdCategory)
+
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+const getaProdCategory = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    validateMongodbId(id);
+    try {
+        const getaProdCategory = await ProdCategory.findById(id);
+        res.json(getaProdCategory)
+
+    } catch (error) {
+        throw new Error(error)
+    }
+    
+})
+module.exports = { createProdCategory,updateProdCategory, deleteProdCategory, getaProdCategory }

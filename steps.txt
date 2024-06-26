@@ -56,3 +56,5 @@ npm i nodemailer
 **forgot password with email
 -create app password (my account :security -> 2 steps verification ->app password )
 localhost:5000/api/user/forgot-password-token
+** blog category , Product category ,Brand -> create update delete get a , get all
+** add to wishlist , rating -> productCtrl 

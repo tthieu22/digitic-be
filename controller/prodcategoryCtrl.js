@@ -1,6 +1,6 @@
 const ProdCategory = require("../models/prodcategoryModel")
 const asyncHandler = require("express-async-handler")
-const {validateMongodbId} = require("../utils/validateMongodbId")
+const { validateMongodbId } = require("../utils/validateMongodbId")
 
 const createProdCategory = asyncHandler(async (req, res) => {
     try {
@@ -15,7 +15,7 @@ const updateProdCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
     validateMongodbId(id)
     try {
-        const updateProdCategory = await ProdCategory.findByIdAndUpdate(id, req.body,{new :true});
+        const updateProdCategory = await ProdCategory.findByIdAndUpdate(id, req.body, { new: true });
         res.json(updateProdCategory)
 
     } catch (error) {
@@ -43,6 +43,15 @@ const getaProdCategory = asyncHandler(async (req, res) => {
     } catch (error) {
         throw new Error(error)
     }
-    
+
 })
-module.exports = { createProdCategory,updateProdCategory, deleteProdCategory, getaProdCategory }
+const getAllProdCategory = asyncHandler(async (req, res) => {
+    try {
+        const getallProdCategory = await ProdCategory.find();
+        res.json(getallProdCategory)
+
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+module.exports = { createProdCategory, updateProdCategory, deleteProdCategory, getaProdCategory, getAllProdCategory }

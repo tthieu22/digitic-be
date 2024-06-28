@@ -58,3 +58,7 @@ npm i nodemailer
 localhost:5000/api/user/forgot-password-token
 ** blog category , Product category ,Brand -> create update delete get a , get all
 ** add to wishlist , rating -> productCtrl 
+**add image create link of image with cloudinary 
+ npm i multer sharp cloundinary
+untils -> cloudinary => middlewares -> uploadImage 
+

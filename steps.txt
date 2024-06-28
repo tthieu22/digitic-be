@@ -61,4 +61,7 @@ localhost:5000/api/user/forgot-password-token
 **add image create link of image with cloudinary 
  npm i multer sharp cloundinary
 untils -> cloudinary => middlewares -> uploadImage 
+post man : {{base_url}}product/upload/667d416297dc47aa4270eb63 
+image :filename 
 
+productModel -> 

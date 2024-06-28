@@ -2,9 +2,18 @@ const multer = require("multer")
 const sharp = require("sharp")
 const path = require("path")
 
-const multerStorage = multer.diskStorage({
+const multerStorageProduct = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../public/images"));
+        cb(null, path.join(__dirname, "../public/images/products"));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg");
+    },
+});
+const multerStorageBlog = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "../public/images/blogs"));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -21,8 +30,13 @@ const multerFilter = (req, file, cb) => {
         }, false);
     }
 };
-const uploadPhoto = multer({
-    storage: multerStorage,
+const uploadPhotoProduct = multer({
+    storage: multerStorageProduct,
+    fileFilter: multerFilter,
+    limits: { fieldSize: 2000000 }
+})
+const uploadPhotoBlog = multer({
+    storage: multerStorageBlog,
     fileFilter: multerFilter,
     limits: { fieldSize: 2000000 }
 })
@@ -41,4 +55,4 @@ const blogImgResize = async (req, res, next) => {
     }))
     next();
 }
-module.exports = { uploadPhoto, productImgResize, blogImgResize }
+module.exports = { uploadPhotoProduct, productImgResize, blogImgResize, uploadPhotoBlog }

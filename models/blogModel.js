@@ -34,10 +34,7 @@ var blogSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    image: {
-        type: String,
-        default: "https://mountainguides.com/wordpress/wp-content/uploads/2017/06/2013baker6-300x182.jpg"
-    },
+    images: [],
     author: {
         type: String,
         default: "Admin"

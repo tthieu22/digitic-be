@@ -3,8 +3,7 @@ const User = require("../models/userModel")
 const asyncHandler = require("express-async-handler")
 const { validateMongodbId } = require("../utils/validateMongodbId");
 const cloudinaryUploadImg = require("../utils/cloudinary");
-
-
+const fs = require("fs")
 const createBlog = asyncHandler(async (req, res) => {
     try {
         const newBlog = await Blog.create(req.body);
@@ -105,13 +104,9 @@ const likeBlog = asyncHandler(async (req, res) => {
 const disLikeBlog = asyncHandler(async (req, res) => {
     const { blogId } = req.body;
     validateMongodbId(blogId)
-    //find the blog you want to be like
     const blog = await Blog.findById(blogId)
-    //find the login user
     const loginUserId = req?.user?._id;
-    //find if the user has liked the blog
     const isDisliked = blog?.isDisliked;
-    // find if the user has disliked the blog
     const alreadyLiked = blog?.likes?.find(userId => userId.toString() === loginUserId.toString())
     if (alreadyLiked) {
         const blog = await Blog.findByIdAndUpdate(blogId, {
@@ -136,24 +131,29 @@ const disLikeBlog = asyncHandler(async (req, res) => {
     }
 })
 
-const uploadImages = asyncHandler(async (req, res) => {
-    console.log(req.files);
+const uploadImages = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     validateMongodbId(id);
     try {
         const uploader = (path) => cloudinaryUploadImg(path, "images");
-        const urls = []
+        const urls = [];
         const files = req.files;
         for (const file of files) {
-            const { path } = file
+            const { path } = file;
             const newpath = await uploader(path);
-            urls.push(newpath)
+            urls.push(newpath);
+            fs.unlinkSync(path);
         }
-        const findBlog = await Blog.findByIdAndUpdate(id, { images: urls.map((file) => { return file }) }, { new: true })
+        const findBlog = await Blog.findByIdAndUpdate(
+            id,
+            { images: urls.map((file) => file) },
+            { new: true }
+        );
 
-        res.json(findBlog)
+        res.json(findBlog);
+        next();
     } catch (error) {
         throw new Error(error)
     }
-})
+});
 module.exports = { createBlog, updateBlog, getaBlog, getAllBlog, deleteBlog, likeBlog, disLikeBlog, uploadImages }

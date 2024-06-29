@@ -47,6 +47,36 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
     throw new Error("Invalid Credentials");
   }
 });
+const loginAdminCtrl = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  //check if user exists or not
+  const findAdmin = await User.findOne({ email });
+  if (findAdmin.role !== "admin") throw new Error("Not authorised");
+  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findAdmin?._id);
+    const updateuser = await User.findByIdAndUpdate(
+      findAdmin.id,
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: findAdmin?._id,
+      firstname: findAdmin?.firstname,
+      lastname: findAdmin?.lastname,
+      email: findAdmin?.email,
+      mobile: findAdmin?.mobile,
+      token: generateToken(findAdmin?._id),
+    });
+  } else {
+    throw new Error("Invalid Credentials");
+  }
+})
 //handle refreshToken
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
@@ -113,6 +143,26 @@ const updateaUser = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// save user address 
+const saveAddress = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongodbId(_id);
+  try {
+    const updateaUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        address: req?.body?.address
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateaUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+})
 // get All user
 const getallUser = asyncHandler(async (req, res) => {
   try {
@@ -237,6 +287,23 @@ const resetPassword = asyncHandler(async (req, res) => {
   await user.save();
   res.json(user);
 })
+
+
+const getWishList = asyncHandler(async (req, res) => {
+  const { _id } = req.user
+  try {
+    const findUser = await User.findById(_id).populate("wishlist")
+
+    res.json(findUser)
+  } catch (error) {
+    throw new Error(error);
+
+  }
+})
+
+const userCart = asyncHandler(async (req, res, next) => {
+  res.send("hello from cart")
+})
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -248,5 +315,8 @@ module.exports = {
   unblockUser,
   handleRefreshToken,
   logout, updatePassword, forgotPasswordToken,
-  resetPassword
+  resetPassword,
+  loginAdminCtrl,
+  getWishList, saveAddress,
+  userCart
 };

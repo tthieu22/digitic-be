@@ -64,4 +64,5 @@ untils -> cloudinary => middlewares -> uploadImage
 post man : {{base_url}}product/upload/667d416297dc47aa4270eb63 
 image :filename 
 
-productModel -> 
+router.put("/upload/:id", authmiddleware, isAdmin, uploadPhotoProduct.array('image', 10), uploadImages, productImgResize)
+router.put("/upload/:id", authmiddleware, isAdmin, uploadPhotoBlog.array('image', 10), uploadImages, blogImgResize)

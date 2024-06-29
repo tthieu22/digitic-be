@@ -1,19 +1,11 @@
 const multer = require("multer")
 const sharp = require("sharp")
 const path = require("path")
-
-const multerStorageProduct = multer.diskStorage({
+const asyncHandler = require("express-async-handler")
+const fs = require("fs")
+const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../public/images/products"));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, file.fieldname + "-" + uniqueSuffix + ".jpeg");
-    },
-});
-const multerStorageBlog = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../public/images/blogs"));
+        cb(null, path.join(__dirname, "../public/images/"));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -30,29 +22,38 @@ const multerFilter = (req, file, cb) => {
         }, false);
     }
 };
-const uploadPhotoProduct = multer({
-    storage: multerStorageProduct,
-    fileFilter: multerFilter,
-    limits: { fieldSize: 2000000 }
-})
-const uploadPhotoBlog = multer({
-    storage: multerStorageBlog,
+const uploadPhoto = multer({
+    storage: multerStorage,
     fileFilter: multerFilter,
     limits: { fieldSize: 2000000 }
 })
 
 const productImgResize = async (req, res, next) => {
-    if (!req.files) return next();
-    await Promise.all(req.files.map(async (file) => {
-        await sharp(file.path).resize(300, 300).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/products/${file.filename}`)
-    }))
-    next();
+    try {
+        if (!req.files) return next();
+        await Promise.all(req.files.map(async (file) => {
+            await sharp(file.path).resize(300, 300).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/products/${file.filename}`)
+            fs.unlinkSync(`public/images/products/${file.filename}`)
+        }))
+    } catch (error) {
+    }
 }
-const blogImgResize = async (req, res, next) => {
-    if (!req.files) return next();
-    await Promise.all(req.files.map(async (file) => {
-        await sharp(file.path).resize(300, 300).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/blogs/${file.filename}`)
-    }))
-    next();
-}
-module.exports = { uploadPhotoProduct, productImgResize, blogImgResize, uploadPhotoBlog }
+const blogImgResize = asyncHandler(async (req, res, next) => {
+    try {
+        console.log(req.files); // Thêm dòng này để kiểm tra req.files
+        if (!req.files) return next();
+
+        await Promise.all(
+            req.files.map(async (file) => {
+                await sharp(file.path)
+                    .resize(300, 300)
+                    .toFormat('jpeg')
+                    .jpeg({ quality: 90 })
+                    .toFile(`public/images/blogs/${file.filename}`);
+                fs.unlinkSync(`public/images/products/${file.filename}`)
+            })
+        );
+    } catch (error) {
+    }
+});
+module.exports = { productImgResize, blogImgResize, uploadPhoto }

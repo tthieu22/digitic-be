@@ -14,12 +14,13 @@ var cartSchema = new mongoose.Schema({
         },
 
 
-    ], cartTotal: Number,
+    ],
+    cartTotal: Number,
     totalAfterDiscount: Number,
     orderStatus: {
         type: String,
-        default: "Not proccessed",
-        enum: ["Not Processsed", "Cash on delivery", "Processing", "Dispatched", "Cancelled", "Delivered"]
+        default: "Not processsed",
+        enum: ["Not processsed", "Cash on delivery", "Processing", "Dispatched", "Cancelled", "Delivered"]
     },
     orderby: {
         type: mongoose.Schema.Types.ObjectId,

@@ -8,6 +8,7 @@ const productRouter = require("./routes/productRoute");
 const blogRouter = require("./routes/blogRoute");
 const prodcategoryRouter = require("./routes/prodcategoryRoute")
 const blogcategory = require("./routes/blogCatRoute")
+const color = require("./routes/colorRoute")
 const brand = require("./routes/brandRoute")
 const coupon = require("./routes/couponRoute")
 
@@ -30,6 +31,7 @@ app.use("/api/category", prodcategoryRouter);
 app.use("/api/blog-category", blogcategory);
 app.use("/api/brand", brand);
 app.use("/api/coupon", coupon);
+app.use("/api/color", color);
 
 
 app.use(notFound);

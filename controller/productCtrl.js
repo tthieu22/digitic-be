@@ -3,7 +3,7 @@ const User = require("../models/userModel")
 const asyncHandler = require("express-async-handler")
 const slugify = require("slugify")
 const { validateMongodbId } = require("../utils/validateMongodbId")
-const cloudinaryUploadImg = require("../utils/cloudinary")
+const { cloudinaryUploadImg, cloudinaryDeleteImg } = require("../utils/cloudinary")
 const fs = require("fs")
 const createProduct = asyncHandler(async (req, res) => {
     try {
@@ -182,9 +182,9 @@ const rating = asyncHandler(async (req, res) => {
 
 })
 const uploadImages = asyncHandler(async (req, res, next) => {
-    console.log(req.files);
-    const { id } = req.params;
-    validateMongodbId(id);
+    // console.log(req.files);
+    // const { id } = req.params;
+    // validateMongodbId(id);
     try {
         const uploader = (path) => cloudinaryUploadImg(path, "images");
         const urls = [];
@@ -195,16 +195,29 @@ const uploadImages = asyncHandler(async (req, res, next) => {
             urls.push(newpath);
             fs.unlinkSync(path);
         }
-        const findProduct = await Product.findByIdAndUpdate(
-            id,
-            { images: urls.map((file) => file) },
-            { new: true }
-        );
+        const images = urls.map((file) => { return file })
+        res.json(images)
+        // const findProduct = await Product.findByIdAndUpdate(
+        //     id,
+        //     { images: urls.map((file) => file) },
+        //     { new: true }
+        // );
 
-        res.json(findProduct);
+        // res.json(findProduct);
         next();
     } catch (error) {
         throw new Error(error)
     }
 });
-module.exports = { createProduct, getaProduct, getAllProduct, updateProduct, deleteProduct, addToWish, rating, uploadImages }
+const deleteImages = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const deleted = cloudinaryDeleteImg(id, "images");
+        res.json({ message: "deleted" })
+        next();
+    } catch (error) {
+        throw new Error(error)
+    }
+});
+
+module.exports = { createProduct, getaProduct, getAllProduct, updateProduct, deleteProduct, addToWish, rating, uploadImages, deleteImages }

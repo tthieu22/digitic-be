@@ -66,3 +66,6 @@ image :filename
 
 router.put("/upload/:id", authmiddleware, isAdmin, uploadPhotoProduct.array('image', 10), uploadImages, productImgResize)
 router.put("/upload/:id", authmiddleware, isAdmin, uploadPhotoBlog.array('image', 10), uploadImages, blogImgResize)
+
+** order cart 
+npm i uniqid

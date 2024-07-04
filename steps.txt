@@ -69,3 +69,7 @@ router.put("/upload/:id", authmiddleware, isAdmin, uploadPhotoBlog.array('image'
 
 ** order cart 
 npm i uniqid
+
+** delete image and create color enquiry >>>
+
+done Backend

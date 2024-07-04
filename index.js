@@ -11,6 +11,7 @@ const blogcategory = require("./routes/blogCatRoute")
 const color = require("./routes/colorRoute")
 const brand = require("./routes/brandRoute")
 const coupon = require("./routes/couponRoute")
+const enq = require("./routes/enqRoute")
 
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
@@ -32,6 +33,7 @@ app.use("/api/blog-category", blogcategory);
 app.use("/api/brand", brand);
 app.use("/api/coupon", coupon);
 app.use("/api/color", color);
+app.use("/api/enquiry", enq);
 
 
 app.use(notFound);

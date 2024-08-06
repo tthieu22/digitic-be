@@ -73,3 +73,5 @@ npm i uniqid
 ** delete image and create color enquiry >>>
 
 done Backend
+
+npm i cors

@@ -7,16 +7,17 @@ cloudinary.config({
 })
 const cloudinaryUploadImg = async (fileToUpload) => {
     return new Promise((resolve) => {
-        cloudinary.uploader.upload(fileToUpload, (result) => {
-            resolve({
-                url: result.secure_url,
-                asset_id: result.asset_id,
-                public_id: result.public_id
-            }, {
-                resource_type: "auto",
-            }
-            )
-        })
+        cloudinary.uploader.upload(
+            fileToUpload,
+            { resource_type: "auto" }, 
+            (error, result) => {
+                if (error) return reject(error);
+                resolve({
+                    url: result.secure_url,
+                    asset_id: result.asset_id,
+                    public_id: result.public_id
+                });
+            })
     })
 }
 const cloudinaryDeleteImg = async (fileToDelete) => {

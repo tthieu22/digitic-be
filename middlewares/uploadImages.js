@@ -5,8 +5,7 @@ const asyncHandler = require("express-async-handler")
 const fs = require("fs")
 const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "/tmp");
-        // cb(null, path.join(__dirname, "../public/images/"));
+        cb(null, path.join(__dirname, "../public/images/"));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -41,6 +40,7 @@ const productImgResize = async (req, res, next) => {
 }
 const blogImgResize = asyncHandler(async (req, res, next) => {
     try {
+        console.log(req.files); // Thêm dòng này để kiểm tra req.files
         if (!req.files) return next();
 
         await Promise.all(
